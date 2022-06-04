@@ -15,14 +15,13 @@
 ;; (uiop:directory-files "./") Lists all files in current directory
 ;; (uiop:subdirectories  "./") Lists all subdirectories in current directory
 
-;; Stupid thing that doesn't do what it might look like when seeing the name
-(defun list-all-files-prime ()
-  (map 'list #'(lambda (file) (osicat-posix:stat-mtime (osicat-posix:stat file)))
-    (uiop:directory-files "./")))
-
-(defun list-all-files ()
-  ())
-
+(defun list-all-files (root-path)
+  (map 'list #'(lambda (file-path)
+        (make-instance  'file
+                        :path file-path
+                        :modified
+                          (osicat-posix:stat-mtime (osicat-posix:stat file-path))))
+    (uiop:directory-files root-path)))
 
 (defun main ()
     (format t "Hello there"))
