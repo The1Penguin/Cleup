@@ -12,16 +12,17 @@
             :documentation "The last time the file was modified"))
   (:documentation "The base class of files."))
 
-;; (uiop:directory-files "./") Lists all files in current directory
-;; (uiop:subdirectories  "./") Lists all subdirectories in current directory
-
 (defun list-all-files (root-path)
-  (map 'list #'(lambda (file-path)
+  (apply #'concatenate 'list (map 'list #'(lambda (file-path)
         (make-instance  'file
                         :path file-path
                         :modified
                           (osicat-posix:stat-mtime (osicat-posix:stat file-path))))
-    (uiop:directory-files root-path)))
+        (uiop:directory-files root-path))
+      (remove-if #'(lambda (x)
+                    (equal x NIL))
+                 (concatenate 'list (map 'list #'list-all-files
+                    (uiop:subdirectories root-path))))))
 
 (defun main ()
     (format t "Hello there"))
