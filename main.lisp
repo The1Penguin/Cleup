@@ -1,5 +1,8 @@
 (ql:quickload "osicat")
 
+(deftype file-state () '(new deleted existing))
+(deftype file-modified () '(updated not-updated))
+
 (defclass file ()
   ((path    :accessor file-path
             :initarg :path
@@ -12,8 +15,10 @@
              :documentation "The last time the file was modified"))
   (:documentation "The base class of files."))
 
+;; TODO add the ability to hide . files.
+;; TODO change behaviour to be relative rather than absolute concerning paths.
 (defun list-all-files (root-path)
-  (concatenate 'list
+  (apply #'concatenate 'list
                (map 'list #'(lambda (file-path)
                               (make-instance  'file
                                               :path file-path
